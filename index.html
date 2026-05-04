@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChatGPTで手相鑑定書を作る方法｜すみっち特典</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Oswald:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F9F6F2;
+    --bg2: #F0EBE3;
+    --terracotta: #C86B3A;
+    --terracotta-light: #E8956A;
+    --blue: #5F9EA0;
+    --blue-dark: #3D7A7C;
+    --gold: #C9A84C;
+    --text: #2C2420;
+    --text-muted: #7A6E68;
+    --white: #FFFFFF;
+    --radius: 16px;
+    --shadow: 0 4px 24px rgba(44,36,32,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #EDE8E0;
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    font-family: 'Noto Sans JP', sans-serif;
+    color: var(--text);
+  }
+
+  .wrapper {
+    width: 100%;
+    max-width: 500px;
+    background: var(--bg);
+    min-height: 100vh;
+  }
+
+  /* ========== COVER ========== */
+  .cover {
+    background: linear-gradient(160deg, #2C2420 0%, #4A3428 50%, #3D2A1E 100%);
+    padding: 48px 28px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 70% 30%, rgba(201,168,76,0.18) 0%, transparent 60%),
+                radial-gradient(circle at 20% 80%, rgba(200,107,58,0.15) 0%, transparent 50%);
+  }
+
+  .cover-badge {
+    display: inline-block;
+    background: var(--gold);
+    color: #2C2420;
+    font-family: 'Oswald', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    padding: 5px 16px;
+    border-radius: 100px;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cover-emoji {
+    font-size: 56px;
+    display: block;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(0 4px 16px rgba(201,168,76,0.5));
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .cover-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 13px;
+    color: var(--gold);
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cover-main {
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.4;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cover-main span {
+    color: var(--terracotta-light);
+  }
+
+  .cover-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.8;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ========== SECTIONS ========== */
+  .section {
+    padding: 32px 24px;
+    border-bottom: 1px solid rgba(44,36,32,0.07);
+  }
+
+  .section:last-child { border-bottom: none; }
+
+  .section-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--terracotta);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+
+  .section-title {
+    font-size: 20px;
+    font-weight: 900;
+    line-height: 1.4;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .section-body {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.9;
+  }
+
+  /* ========== GREETING ========== */
+  .greeting-card {
+    background: var(--bg2);
+    border-radius: var(--radius);
+    padding: 20px;
+    border-left: 4px solid var(--terracotta);
+  }
+
+  .greeting-name {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--terracotta);
+    margin-bottom: 8px;
+  }
+
+  /* ========== BENEFITS ========== */
+  .benefit-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .benefit-item {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    box-shadow: var(--shadow);
+    transition: transform 0.2s;
+  }
+
+  .benefit-item:hover { transform: translateY(-2px); }
+
+  .benefit-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .benefit-icon.tc { background: rgba(200,107,58,0.12); }
+  .benefit-icon.bl { background: rgba(95,158,160,0.12); }
+  .benefit-icon.gd { background: rgba(201,168,76,0.12); }
+
+  .benefit-text h4 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+
+  .benefit-text p {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  /* ========== STEPS ========== */
+  .step-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .step-item {
+    display: flex;
+    gap: 16px;
+    padding-bottom: 24px;
+    position: relative;
+  }
+
+  .step-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 18px;
+    top: 40px;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--terracotta), transparent);
+    opacity: 0.3;
+  }
+
+  .step-num {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--terracotta), var(--terracotta-light));
+    color: var(--white);
+    font-family: 'Oswald', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(200,107,58,0.35);
+  }
+
+  .step-content h4 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    padding-top: 6px;
+    color: var(--text);
+  }
+
+  .step-content p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.8;
+  }
+
+  /* IMAGE PLACEHOLDER (動画プレースホルダーから変更) */
+  .step-image {
+    width: 100%;
+    border-radius: var(--radius);
+    margin: 16px 0;
+    box-shadow: 0 4px 12px rgba(44,36,32,0.1);
+    display: block;
+    border: 1px solid rgba(44,36,32,0.05);
+    background: var(--white);
+  }
+
+  /* ========== PROMPT BOX ========== */
+  .prompt-section {
+    background: #1C1814;
+    margin: 0 -24px;
+    padding: 28px 24px;
+  }
+
+  .prompt-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .prompt-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  .copy-btn {
+    background: rgba(201,168,76,0.15);
+    border: 1px solid rgba(201,168,76,0.4);
+    color: var(--gold);
+    font-size: 12px;
+    font-family: 'Noto Sans JP', sans-serif;
+    padding: 5px 14px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .copy-btn:hover {
+    background: rgba(201,168,76,0.3);
+  }
+
+  .copy-btn.copied {
+    background: rgba(95,158,160,0.2);
+    border-color: var(--blue);
+    color: var(--blue);
+  }
+
+  .prompt-box {
+    background: #0F0C0A;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid rgba(255,255,255,0.07);
+    overflow-x: auto;
+  }
+
+  .prompt-box pre {
+    font-family: 'Courier New', monospace;
+    font-size: 11.5px;
+    line-height: 1.9;
+    color: #C8D6E0;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  .prompt-box .comment { color: #6A9A6C; }
+  .prompt-box .heading { color: var(--gold); font-weight: bold; }
+  .prompt-box .keyword { color: var(--terracotta-light); }
+
+  /* ========== POINT TAGS ========== */
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .tag {
+    background: var(--bg2);
+    border-radius: 100px;
+    padding: 5px 14px;
+    font-size: 12px;
+    color: var(--text-muted);
+    border: 1px solid rgba(44,36,32,0.1);
+  }
+
+  .tag.blue { background: rgba(95,158,160,0.1); color: var(--blue-dark); border-color: rgba(95,158,160,0.25); }
+  .tag.terra { background: rgba(200,107,58,0.1); color: var(--terracotta); border-color: rgba(200,107,58,0.25); }
+
+  /* ========== CLOSING ========== */
+  .closing {
+    background: linear-gradient(160deg, #2C2420, #3D2A1E);
+    padding: 40px 28px;
+    text-align: center;
+    color: var(--white);
+  }
+
+  .closing-emoji { font-size: 40px; margin-bottom: 16px; display: block; }
+
+  .closing-title {
+    font-size: 20px;
+    font-weight: 900;
+    line-height: 1.5;
+    margin-bottom: 12px;
+    color: var(--white);
+  }
+
+  .closing-title span { color: var(--gold); }
+
+  .closing-body {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.9;
+    margin-bottom: 24px;
+  }
+
+  .closing-handle {
+    display: inline-block;
+    background: rgba(201,168,76,0.12);
+    border: 1px solid rgba(201,168,76,0.35);
+    color: var(--gold);
+    font-size: 12px;
+    letter-spacing: 2px;
+    padding: 8px 22px;
+    border-radius: 100px;
+    font-family: 'Oswald', sans-serif;
+  }
+
+  /* ========== DIVIDER ========== */
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(44,36,32,0.15), transparent);
+    margin: 0 24px;
+  }
+
+  /* ========== NOTE ========== */
+  .note-box {
+    background: rgba(95,158,160,0.08);
+    border: 1px solid rgba(95,158,160,0.2);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-top: 16px;
+    font-size: 12px;
+    color: var(--blue-dark);
+    line-height: 1.8;
+  }
+
+  .note-box strong { font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- COVER -->
+  <div class="cover">
+    <div class="cover-badge">📩 すみっち 限定特典</div>
+    <span class="cover-emoji">🖐️</span>
+    <div class="cover-title">PALM READING PROMPT</div>
+    <h1 class="cover-main">スマホ1枚＋5分で<br><span>プロ級の手相鑑定書</span>が<br>自動で完成する方法</h1>
+    <p class="cover-sub">ChatGPT × 画像解析で<br>あなただけの「自己理解レポート」を量産しよう</p>
+  </div>
+
+  <!-- GREETING -->
+  <div class="section">
+    <div class="greeting-card">
+      <div class="greeting-name">👋 こんにちは、すみっちです！</div>
+      <p class="section-body">特典を受け取っていただきありがとうございます！<br>
+      このプロンプトを使えば、<strong>手のひらを撮影してChatGPTに貼るだけ</strong>で、統計学ベースのプロ級鑑定書が自動生成されます。<br><br>
+      コピペして、今すぐ試してみてください🔥</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- BENEFITS -->
+  <div class="section">
+    <div class="section-label">Why This Works</div>
+    <h2 class="section-title">なぜAIで手相鑑定が<br>できるのか？3つの理由</h2>
+    <div class="benefit-list">
+      <div class="benefit-item">
+        <div class="benefit-icon tc">📊</div>
+        <div class="benefit-text">
+          <h4>手相は「統計学」の塊</h4>
+          <p>手相は何千年ものデータ蓄積。AIはデータ分析が専門なので、相性バツグンの分野なんです。</p>
+        </div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon bl">🧠</div>
+        <div class="benefit-text">
+          <h4>画像解析×推論で精度が爆上がり</h4>
+          <p>最新のChatGPTは画像を「読む」だけでなく、論理的に分析。プロも舌を巻くレポートが一発で出ます。</p>
+        </div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon gd">⚡</div>
+        <div class="benefit-text">
+          <h4>自己理解×副業コンテンツに使える</h4>
+          <p>友人へのプレゼント・SNSネタ・コーチング資料に活用できる。コンテンツが5分で量産可能。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- STEPS -->
+  <div class="section">
+    <div class="section-label">How To Use</div>
+    <h2 class="section-title">たった3ステップで完成</h2>
+
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>手のひらをスマホで撮影</h4>
+          <p>明るい場所で、手のひらをしっかり広げて撮影。線がはっきり写るほど精度が上がります✨</p>
+          <!-- ここに1枚目の画像を埋め込み -->
+          <img src="手相例1.png" alt="手のひらをスマホで撮影した手相例" class="step-image">
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>ChatGPTに画像をアップ</h4>
+          <p>ChatGPTを開き、画像を添付してください。この例は<strong>無料プランで一発出し</strong>です！</p>
+          <!-- ここに2枚目の画像を埋め込み -->
+          <img src="鑑定書1.png" alt="ChatGPTが出力した鑑定書の例" class="step-image">
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>下のプロンプトをコピペして送信</h4>
+          <p>画像を貼った状態で、下のプロンプトをそのまま貼り付けて送るだけ。あとはAIが全部やってくれます🔥</p>
+          <div class="tag-row">
+            <span class="tag blue">✅ 日本語OK</span>
+            <span class="tag terra">✅ 一発生成</span>
+            <span class="tag">✅ 画像付きレポート</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROMPT BOX -->
+  <div class="section" style="background: #1C1814; margin: 0; padding: 28px 24px;">
+    <div class="prompt-header">
+      <div class="prompt-label">📋 コピペ用プロンプト</div>
+      <button class="copy-btn" id="copyBtn" onclick="copyPrompt()">コピーする</button>
+    </div>
+    <div class="prompt-box">
+      <pre id="promptText"><span class="comment"># Role</span>
+        あなたは世界最高峰のAI手相鑑定士であり、
+        統計学に基づいたプロフェッショナルな性格分析・
+        キャリアアドバイザーです。
+        添付された手相画像を精密に解析し、
+        30代以上のビジネスパーソンが自己理解を深め、
+        仕事や人生の指針にできる
+        「超精密・自己理解レポート」を作成してください。
+
+        <span class="comment"># Constraints</span>
+        - 占いやスピリチュアルに寄りすぎず、
+        「統計学的な傾向」として論理的に解説すること。
+        - 専門用語（生命線、知能線など）を解説しつつ、
+        ビジネスや日常でどう現れるか具体的に記述。
+        - 出力は「構造化されたレポート形式」で
+        Markdownを用いて美しく出力すること。
+        - 最後に、画像生成機能（DALL-E 3）を使用して、
+        この鑑定結果を視覚的にまとめた
+        「1枚の美しい鑑定書」を生成してください。
+
+        <span class="comment"># Report Structure</span>
+        <span class="heading">1.【総合診断】</span>
+        第一印象 / 手相のタイプ / 全体的な強みと注意点
+
+        <span class="heading">2.【主要線診断】</span>
+        生命線（バイタリティ・健康）
+        知能線（思考タイプ・判断力）
+        感情線（人間関係・対人ストレス）
+        運命線（仕事運・キャリアの転機）
+
+        <span class="heading">3.【才能・ビジネス運】</span>
+        向いている働き方 / 評価されやすい強み /
+        伸ばすべき才能
+
+        <span class="heading">4.【金運・チャンス運】</span>
+        お金の使い方 / 稼ぎ方の傾向 /
+        チャンスを掴むポイント
+
+        <span class="heading">5.【総合アドバイス】</span>
+        魅力ポイントBEST3 / 注意点BEST3 /
+        明日から意識すべきこと
+
+        <span class="comment"># Output Style</span>
+        - トーン：誠実・冷静・プロフェッショナル
+        - 用語：ビジネスシーンで使える表現
+        （例：レジリエンス、論理的思考など）</pre>
+    </div>
+    <div class="note-box">
+      <strong>💡 ポイント：</strong>ChatGPT Plus（有料）ならもっと精度が上がりますけど、無料版でもテキストレポートは完全に出力可能です。
+    </div>
+  </div>
+
+  <!-- CLOSING -->
+  <div class="closing">
+    <span class="closing-emoji">🌟</span>
+    <h2 class="closing-title">AIを使いこなした人が<br><span>「圧倒的に有利」</span>な時代が<br>もう始まっています。</h2>
+    <p class="closing-body">
+      このプロンプト1つで、自己理解もコンテンツ作成も効率化。<br>
+      これ応用すれば、副業でもお小遣い稼ぎできちゃうかも？？<br>
+      <strong>AI x 副業に興味がある人は、DMで一緒に送った「AIマネタイズ教科書」も読んでみてくださいね✨</strong><br><br>
+      これからも、AIをフル活用していきましょう🔥
+    </p>
+  </div>
+
+</div>
+
+<script>
+function copyPrompt() {
+  const text = document.getElementById('promptText').innerText;
+  
+  // クリップボードAPIがサポートされている場合の処理
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => {
+      showCopiedEffect();
+    }).catch(err => {
+      console.warn('Clipboard API failed, using fallback.', err);
+      fallbackCopyTextToClipboard(text);
+    });
+  } else {
+    // ローカル環境等でClipboard APIが機能しない場合の代替処理
+    fallbackCopyTextToClipboard(text);
+  }
+}
+
+function fallbackCopyTextToClipboard(text) {
+  const textArea = document.createElement("textarea");
+  textArea.value = text;
+  
+  // 画面がスクロールしないように非表示領域に配置
+  textArea.style.top = "0";
+  textArea.style.left = "0";
+  textArea.style.position = "fixed";
+
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+
+  try {
+    const successful = document.execCommand('copy');
+    if (successful) {
+      showCopiedEffect();
+    } else {
+      console.error('Fallback: コピーに失敗しました');
+    }
+  } catch (err) {
+    console.error('Fallback: コピーに失敗しました', err);
+  }
+
+  document.body.removeChild(textArea);
+}
+
+function showCopiedEffect() {
+  const btn = document.getElementById('copyBtn');
+  btn.textContent = 'コピーしました ✓';
+  btn.classList.add('copied');
+  setTimeout(() => {
+    btn.textContent = 'コピーする';
+    btn.classList.remove('copied');
+  }, 2500);
+}
+</script>
+</body>
+</html>
