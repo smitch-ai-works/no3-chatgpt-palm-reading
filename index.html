@@ -957,5 +957,25 @@ function showCopiedEffect() {
                    { passive: true });
 })();
 </script>
+<style>body{padding-bottom:var(--line-dock-height,100px)}html{scroll-padding-bottom:110px}.line-dock{position:fixed;z-index:10000;inset:auto 0 0;padding:10px 16px max(10px,env(safe-area-inset-bottom));background:#ffffffed;border-top:1px solid #dbe2df;backdrop-filter:blur(12px);box-shadow:0 -4px 20px #1524380d}.line-dock a{max-width:540px;margin:auto;padding:9px 18px;min-height:58px;display:flex;gap:14px;align-items:center;justify-content:center;background:#06C755;color:#fff;border-radius:12px;text-decoration:none;line-height:1.45}.line-dock svg{width:26px;height:26px;flex:none}.line-dock small{display:block;font-size:12.5px;font-weight:400}.line-dock b{display:block;font-size:16px;white-space:nowrap}.line-dock a>span:last-child{margin-left:10px;font-size:20px}.line-dock a:hover{background:#05b74e}@media(max-width:600px){.line-dock{padding:8px 10px max(8px,env(safe-area-inset-bottom))}.line-dock a{padding:9px 12px;gap:10px}.line-dock b{font-size:15px}}@media(max-width:360px){.line-dock a>span:last-child{display:none}.line-dock b{font-size:14px}.line-dock svg{width:22px;height:22px}}.sk-cue{bottom:calc(var(--line-dock-height,100px) + 12px)!important}.line-dock{transition:transform .35s ease}.line-dock.is-off{transform:translateY(115%)}</style><aside class="line-dock" aria-label="無料特典の受け取り"><a href="https://sub.aione.co.jp/line/open/AFNr9sXpsQp8?mtid=8lMSlxxe5d1h" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 2H4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h3v4.2l4.8-4.2H20a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/></svg><span><small>追加特典｜僕なりの正解をまとめた1冊</small><b>公式LINEで無料で受け取る</b></span><span aria-hidden="true">→</span></a></aside><script>
+/* 本文の下余白を固定ボタンの実寸に合わせる */
+(function(){var d=document.querySelector('.line-dock');if(!d)return;
+ function s(){document.body.style.setProperty('--line-dock-height',Math.ceil(d.getBoundingClientRect().height)+'px')}
+ s();if(window.ResizeObserver)new ResizeObserver(s).observe(d);addEventListener('resize',s);})();
+</script><script>
+/* 固定ボタンは35%まで読んでから出す。終盤CTAが見えている間は隠す（同じボタンが2つ並ばないように）。 */
+(function(){
+ var d=document.querySelector('.line-dock'), c=document.getElementById('sk-cta'), inCta=false;
+ if(!d) return;
+ function f(){
+  var h=document.documentElement, p=h.scrollTop/((h.scrollHeight-h.clientHeight)||1);
+  d.classList.toggle('is-off', p<.35 || inCta);
+ }
+ if(c && window.IntersectionObserver)
+  new IntersectionObserver(function(e){ inCta=e[0].isIntersecting; f(); }).observe(c);
+ addEventListener('scroll', f, {passive:true});
+ f();
+})();
+</script>
 </body>
 </html>
